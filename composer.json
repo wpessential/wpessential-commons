@@ -1,0 +1,32 @@
+{
+    "name": "wpessential/wpessential-commons",
+    "minimum-stability": "stable",
+    "description": "WPEssential Commons helping in WordPress functionality.",
+    "type": "library",
+    "license": "GPL-3.0-or-later",
+    "autoload": {
+        "psr-4": {
+            "WPEssential\\Library\\": "src/"
+        },
+        "files": [
+            "src/Functions/general.php",
+            "src/Functions/file.php",
+            "src/Functions/image.php",
+            "src/Functions/post.php",
+            "src/Functions/query.php",
+            "src/Functions/style.php",
+            "src/Functions/element.php",
+            "src/Functions/array.php"
+        ]
+    },
+    "authors": [
+        {
+            "name": "WPEssential",
+            "email": "ceo@wpessential.org"
+        }
+    ],
+    "require": {
+        "php" : ">=7.4",
+        "ext-json" : "*"
+    }
+}

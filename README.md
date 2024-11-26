@@ -1,1 +1,3 @@
-# wpessential-commons
+# WPEssential Commons
+
+Helping in WordPress functionality.
