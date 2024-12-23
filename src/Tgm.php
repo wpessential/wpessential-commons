@@ -27,12 +27,8 @@ final class Tgm
 	public static function plugin_list ()
 	{
 		$plugin_list = [
-			'exmaple' => [
+			'example' => [
 				'name'               => 'TGM Example Plugin',
-				// The plugin name.
-				'slug'               => 'tgm-example-plugin',
-				// The plugin slug (typically the folder name).
-				'source'             => self::$WPE_TGM_CONFIG_DIR . 'tgm-example-plugin.zip',
 				// The plugin source.
 				'required'           => true,
 				'version'            => '1.0.0',
@@ -45,7 +41,17 @@ final class Tgm
 
 		$plugin_list = apply_filters( 'wpe/register/plugins', $plugin_list );
 
-		tgmpa( $plugin_list, self::config() );
+		$ready_plugins = [];
+		foreach ( $plugin_list as $plugin_slug => $plugin_info )
+		{
+			if ( file_exists( self::$WPE_TGM_CONFIG_DIR . "{$plugin_slug}.zip" ) )
+			{
+				$plugin_info[ 'slug' ]         = $plugin_slug;
+				$ready_plugins[ $plugin_slug ] = $plugin_info;
+			}
+		}
+
+		tgmpa( $ready_plugins, self::config() );
 	}
 
 	private static function config ()
