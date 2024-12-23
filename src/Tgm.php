@@ -1,6 +1,6 @@
 <?php
 
-namespace WPEssential\Theme;
+namespace WPEssential\Library;
 
 if ( ! \defined( 'ABSPATH' ) )
 {
