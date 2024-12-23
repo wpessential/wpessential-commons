@@ -11,7 +11,7 @@ final class Tgm
 {
 	private static $WPE_TGM_CONFIG_DIR = '/config/tgm/';
 
-	public static function constructor ()
+	public static function init ()
 	{
 		if ( ! \defined( 'WPE_TGM' ) )
 		{
