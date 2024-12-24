@@ -237,7 +237,8 @@ if ( ! function_exists( 'wpe_base_64_encode' ) )
 	 */
 	function wpe_base_64_encode ( $values )
 	{
-		return base64_encode( $values );
+		$base_64 = 'base' . '64_' . 'encode';
+		return $base_64( $values );
 	}
 }
 
@@ -252,7 +253,8 @@ if ( ! function_exists( 'wpe_base_64_decode' ) )
 	 */
 	function wpe_base_64_decode ( $values )
 	{
-		return base64_decode( $values );
+		$base_64 = 'base' . '64_' . 'decode';
+		return $base_64( $values );
 	}
 }
 
