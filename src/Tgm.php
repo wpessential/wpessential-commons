@@ -80,13 +80,13 @@ final class Tgm
 
 			/*
 			'strings'      => array(
-				'page_title'                      => __( 'Install Required Plugins', 'wpessential' ),
-				'menu_title'                      => __( 'Install Plugins', 'wpessential' ),
+				'page_title'                      => esc_html__( 'Install Required Plugins', 'wpessential' ),
+				'menu_title'                      => esc_html__( 'Install Plugins', 'wpessential' ),
 				/* translators: %s: plugin name. * /
-				'installing'                      => __( 'Installing Plugin: %s', 'wpessential' ),
+				'installing'                      => esc_html__( 'Installing Plugin: %s', 'wpessential' ),
 				/* translators: %s: plugin name. * /
-				'updating'                        => __( 'Updating Plugin: %s', 'wpessential' ),
-				'oops'                            => __( 'Something went wrong with the plugin API.', 'wpessential' ),
+				'updating'                        => esc_html__( 'Updating Plugin: %s', 'wpessential' ),
+				'oops'                            => esc_html__( 'Something went wrong with the plugin API.', 'wpessential' ),
 				'notice_can_install_required'     => _n_noop(
 					/* translators: 1: plugin name(s). * /
 					'This theme requires the following plugin: %1$s.',
@@ -138,18 +138,18 @@ final class Tgm
 					'Begin activating plugins',
 					'wpessential'
 				),
-				'return'                          => __( 'Return to Required Plugins Installer', 'wpessential' ),
-				'plugin_activated'                => __( 'Plugin activated successfully.', 'wpessential' ),
-				'activated_successfully'          => __( 'The following plugin was activated successfully:', 'wpessential' ),
+				'return'                          => esc_html__( 'Return to Required Plugins Installer', 'wpessential' ),
+				'plugin_activated'                => esc_html__( 'Plugin activated successfully.', 'wpessential' ),
+				'activated_successfully'          => esc_html__( 'The following plugin was activated successfully:', 'wpessential' ),
 				/* translators: 1: plugin name. * /
-				'plugin_already_active'           => __( 'No action taken. Plugin %1$s was already active.', 'wpessential' ),
+				'plugin_already_active'           => esc_html__( 'No action taken. Plugin %1$s was already active.', 'wpessential' ),
 				/* translators: 1: plugin name. * /
-				'plugin_needs_higher_version'     => __( 'Plugin not activated. A higher version of %s is needed for this theme. Please update the plugin.', 'wpessential' ),
+				'plugin_needs_higher_version'     => esc_html__( 'Plugin not activated. A higher version of %s is needed for this theme. Please update the plugin.', 'wpessential' ),
 				/* translators: 1: dashboard link. * /
-				'complete'                        => __( 'All plugins installed and activated successfully. %1$s', 'wpessential' ),
-				'dismiss'                         => __( 'Dismiss this notice', 'wpessential' ),
-				'notice_cannot_install_activate'  => __( 'There are one or more required or recommended plugins to install, update or activate.', 'wpessential' ),
-				'contact_admin'                   => __( 'Please contact the administrator of this site for help.', 'wpessential' ),
+				'complete'                        => esc_html__( 'All plugins installed and activated successfully. %1$s', 'wpessential' ),
+				'dismiss'                         => esc_html__( 'Dismiss this notice', 'wpessential' ),
+				'notice_cannot_install_activate'  => esc_html__( 'There are one or more required or recommended plugins to install, update or activate.', 'wpessential' ),
+				'contact_admin'                   => esc_html__( 'Please contact the administrator of this site for help.', 'wpessential' ),
 
 				'nag_type'                        => '', // Determines admin notice type - can only be one of the typical WP notice classes, such as 'updated', 'update-nag', 'notice-warning', 'notice-info' or 'error'. Some of which may not work as expected in older WP versions.
 			),
