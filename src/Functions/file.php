@@ -8,7 +8,16 @@ if ( ! function_exists( 'wpe_template_path' ) )
 {
 	function wpe_template_path ()
 	{
-		return apply_filters( 'wpe/template/path', 'wpessential/' );
+		if ( false !== strpos( __FILE__, WP_PLUGIN_DIR ) || false !== strpos( __FILE__, WPMU_PLUGIN_DIR ) )
+		{
+			$dir = plugin_dir_path( __DIR__ ) . '/';
+		}
+		else
+		{
+			$dir = get_template_directory() . '/';
+		}
+
+		return apply_filters( 'wpe/template/path', $dir );
 	}
 }
 if ( ! function_exists( 'wpe_template_dir' ) )
@@ -34,7 +43,7 @@ if ( ! function_exists( 'wpe_template_dir' ) )
 			return $find_in;
 		}
 
-		$find_in = WPE_DIR . $path;
+		$find_in = plugin_dir_path( __DIR__ ) . '/' . $path;
 		if ( is_dir( $find_in ) )
 		{
 			return $find_in;
@@ -56,11 +65,15 @@ if ( ! function_exists( 'wpe_template_load' ) )
 	/**
 	 * Retrieve|Find the file location in themes and plugins.
 	 *
-	 * @param string $path root path of the file.
+	 * @param string $slug         The $slug represent the file slug.
+	 * @param string $name         The $name represent the file name.
+	 * @param bool   $echo         The $echo represent the file either echo or not.
+	 * @param bool   $require      The $reuqire represent the method type.
+	 * @param bool   $require_once The $require_once represent the method type.
 	 *
 	 * @return string|WP_Error The resource or WP_Error message on failure
 	 */
-	function wpe_template_load ( $slug, $name = '', $echo = true )
+	function wpe_template_load ( $slug, $name = '', $echo = true, $require = false, $require_once = false )
 	{
 		$slug = str_replace( '.php', '', $slug );
 		$name = str_replace( '.php', '', $name );
@@ -74,8 +87,14 @@ if ( ! function_exists( 'wpe_template_load' ) )
 
 			if ( ! $template )
 			{
-				$fallback = WPE_DIR . "templates/{$slug}-{$name}.php";
+				$fallback = plugin_dir_path( __DIR__ ) . "/templates/{$slug}-{$name}.php";
 				$template = file_exists( $fallback ) ? $fallback : '';
+			}
+
+			if ( ! $template )
+			{
+				$fallback = get_template_directory() . "/vendor/wpessential/wpessential-theme-module/{$slug}-{$name}.php";
+				$template = ( file_exists( $fallback ) ) ? $fallback : '';
 			}
 
 		}
@@ -89,8 +108,14 @@ if ( ! function_exists( 'wpe_template_load' ) )
 
 			if ( ! $template )
 			{
-				$fallback = WPE_DIR . "templates/{$slug}.php";
-				$template = file_exists( $fallback ) ? $fallback : '';
+				$fallback = plugin_dir_path( __DIR__ ) . "/templates/{$slug}.php";
+				$template = ( file_exists( $fallback ) ) ? $fallback : '';
+			}
+
+			if ( ! $template )
+			{
+				$fallback = get_template_directory() . "/vendor/wpessential/wpessential-theme-module/{$slug}.php";
+				$template = ( file_exists( $fallback ) ) ? $fallback : '';
 			}
 		}
 
@@ -102,9 +127,13 @@ if ( ! function_exists( 'wpe_template_load' ) )
 			return $template;
 		}
 
-		if ( $template )
+		if ( $template && $require )
 		{
-			load_template( $template, false );
+			load_template( $template, $require_once );
+		}
+		else
+		{
+			return $template;
 		}
 	}
 }
@@ -141,7 +170,7 @@ if ( ! function_exists( 'wpe_plugin_template_load' ) )
 			return $find_in;
 		}
 
-		$find_in = WPE_DIR . "{$_file}";
+		$find_in = plugin_dir_path( __DIR__ ) . "/{$_file}";
 		if ( file_exists( $find_in ) )
 		{
 			return $find_in;
