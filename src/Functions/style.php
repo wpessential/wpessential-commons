@@ -109,7 +109,6 @@ if ( ! function_exists( 'wpe_generate_css' ) )
 	 */
 	function wpe_generate_css ( string $selector, string $style, string $value, $prefix = '', $suffix = '', $echo = true )
 	{
-		$return = '';
 		/*
 		 * Bail early if we have no $selector elements or properties and $value.
 		 */
@@ -120,8 +119,10 @@ if ( ! function_exists( 'wpe_generate_css' ) )
 		$return = sprintf( '%s { %s: %s; }', $selector, $style, $prefix . $value . $suffix );
 		if ( $echo )
 		{
-			echo $return;
+			echo esc_html( $return );
+			return;
 		}
+
 		return $return;
 	}
 }
