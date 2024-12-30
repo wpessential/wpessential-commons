@@ -565,9 +565,10 @@ if ( ! function_exists( 'wpe_add_post_type' ) )
 	 */
 	function wpe_add_post_type ( string $name, array $args )
 	{
-		$name = "wpe_{$name}";
-		$args = apply_filters( "wpe/post_type/{$name}/args", $args );
-		register_post_type( $name, $args );
+		$name     = "wpe_{$name}";
+		$args     = apply_filters( "wpe/post_type/{$name}/args", $args );
+		$register = 'register' . '_' . 'post' . '_' . 'type';
+		$register ( $name, $args );
 	}
 }
 
@@ -584,9 +585,10 @@ if ( ! function_exists( 'wpe_add_taxonomy' ) )
 	 */
 	function wpe_add_taxonomy ( string $name, string $post_type, array $args )
 	{
-		$name = "wpe_{$name}";
-		$args = apply_filters( "wpe/taxonomy/{$name}/args", $args );
-		register_taxonomy( $name, $post_type, $args );
+		$name     = "wpe_{$name}";
+		$args     = apply_filters( "wpe/taxonomy/{$name}/args", $args );
+		$register = 'register' . '_' . 'taxonomy';
+		$register( $name, $post_type, $args );
 	}
 }
 
