@@ -52,24 +52,6 @@ if ( ! function_exists( 'wpe_append_config' ) )
 }
 
 /**
- * Add an element to an array using "dot" notation if it doesn't exist.
- *
- * @param array  $array
- * @param string $key
- * @param mixed  $value
- *
- * @return array
- * @since  1.0.0
- */
-if ( ! function_exists( 'wpe_array_add' ) )
-{
-	function wpe_array_add ( $array, $key, $value )
-	{
-		return Arr::add( $array, $key, $value );
-	}
-}
-
-/**
  * Collapse an array of arrays into a single array.
  *
  * @param array $array
@@ -357,19 +339,23 @@ if ( ! function_exists( 'wpe_array_random' ) )
 }
 
 /**
- * Set an array item to a given value using "dot" notation.
+ * Dots Set
  *
- * If no key is given to the method, the entire array will be replaced.
+ * Set an array value using dot notation.
  *
- * @param array  $array
- * @param string $key
- * @param mixed  $value
+ * @param array  $array the original array
+ * @param string $key   dot notation path to set
+ * @param mixed  $value the value to set
  *
  * @return array
- * @since  1.0.0
  */
-if ( ! function_exists( 'wpe_array_set' ) )
+if ( ! function_exists( 'wpe_array_set' ) && ! function_exists( 'wpe_array_add' ) )
 {
+	function wpe_array_add ( &$array, $key, $value )
+	{
+		return wpe_array_set( $array, $key, $value );
+	}
+
 	function wpe_array_set ( &$array, $key, $value )
 	{
 		return Arr::set( $array, $key, $value );
@@ -571,5 +557,39 @@ if ( ! function_exists( 'wpe_array_filter_false' ) )
 	function wpe_array_filter_false ( $var )
 	{
 		return ( $var !== null && $var === false && $var !== '' );
+	}
+}
+
+/**
+ * HTML class names helper
+ *
+ * @param array $array
+ *
+ * @return string
+ */
+if ( ! function_exists( 'wpe_array_reduce_allow_str' ) )
+{
+	function wpe_array_reduce_allow_str ( $array )
+	{
+		return Arr::reduceAllowedStr( $array );
+	}
+}
+
+/**
+ * Dots Walk
+ *
+ * Traverse array with dot notation with wilds (*).
+ *
+ * @param array|object $array an array to traverse
+ * @param string|array $keys  dot notation key.next.final
+ * @param null|mixed   $default
+ *
+ * @return array|mixed|null
+ */
+if ( ! function_exists( 'wpe_array_reduce_allow_str' ) )
+{
+	function wpe_array_walk ( $array, $keys, $default = null )
+	{
+		return Arr::walk( $array, $keys, $default = null );
 	}
 }

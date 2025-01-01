@@ -16,64 +16,27 @@ class Arr
 	use Macroable;
 
 	/**
-	 * Add an element to an array using "dot" notation if it doesn't exist.
+	 * Array Get
 	 *
-	 * @param array  $array
-	 * @param string $key
-	 * @param mixed  $value
+	 * Strictly get a value from an array using dot notation without wilds (*).
 	 *
-	 * @return array
-	 */
-	public static function add ( $array, $key, $value )
-	{
-		if ( is_null( static::get( $array, $key ) ) )
-		{
-			static::set( $array, $key, $value );
-		}
-
-		return $array;
-	}
-
-	/**
-	 * Get an item from an array using "dot" notation.
-	 *
-	 * @param \ArrayAccess|array $array
-	 * @param string|int         $key
-	 * @param mixed              $default
-	 *
-	 * @return mixed
+	 * @param array|\ArrayAccess $array   Array to search.
+	 * @param string|array       $key     Value to check in dot notation, or an array of string values.
+	 * @param mixed              $default Fallback if value is null.
 	 */
 	public static function get ( $array, $key, $default = null )
 	{
-		if ( ! static::accessible( $array ) )
-		{
-			return wpe_value( $default );
-		}
+		$search = is_array( $key ) ? $key : explode( '.', $key );
 
-		if ( is_null( $key ) )
+		foreach ( $search as $index )
 		{
-			return $array;
-		}
-
-		if ( static::exists( $array, $key ) )
-		{
-			return $array[ $key ];
-		}
-
-		if ( strpos( $key, '.' ) === false )
-		{
-			return $array[ $key ] ?? wpe_value( $default );
-		}
-
-		foreach ( explode( '.', $key ) as $segment )
-		{
-			if ( static::accessible( $array ) && static::exists( $array, $segment ) )
+			if ( is_array( $array ) && array_key_exists( $index, $array ) )
 			{
-				$array = $array[ $segment ];
+				$array = $array[ $index ];
 			}
 			else
 			{
-				return wpe_value( $default );
+				return $default;
 			}
 		}
 
@@ -111,41 +74,25 @@ class Arr
 	}
 
 	/**
-	 * Set an array item to a given value using "dot" notation.
+	 * Dots Set
 	 *
-	 * If no key is given to the method, the entire array will be replaced.
+	 * Set an array value using dot notation.
 	 *
-	 * @param array  $array
-	 * @param string $key
-	 * @param mixed  $value
+	 * @param array  $array the original array
+	 * @param string $keys  dot notation path to set
+	 * @param mixed  $value the value to set
 	 *
 	 * @return array
 	 */
-	public static function set ( &$array, $key, $value )
+	public static function set ( array $array, $keys, $value )
 	{
-		if ( is_null( $key ) )
+		$set      = &$array;
+		$traverse = explode( '.', $keys );
+		foreach ( $traverse as $step )
 		{
-			return $array = $value;
+			$set = &$set[ $step ];
 		}
-
-		$keys = explode( '.', $key );
-
-		while ( count( $keys ) > 1 )
-		{
-			$key = array_shift( $keys );
-
-			// If the key doesn't exist at this depth, we will just create an empty array
-			// to hold the next value, allowing us to create the arrays to hold final
-			// values at the correct depth. Then we'll keep digging into the array.
-			if ( ! isset( $array[ $key ] ) || ! is_array( $array[ $key ] ) )
-			{
-				$array[ $key ] = [];
-			}
-
-			$array = &$array[ $key ];
-		}
-
-		$array[ array_shift( $keys ) ] = $value;
+		$set = $value;
 
 		return $array;
 	}
@@ -231,21 +178,20 @@ class Arr
 	 */
 	public static function dot ( $array, $prepend = '' )
 	{
-		$results = [];
-
-		foreach ( $array as $key => $value )
+		$iterator = new \RecursiveIteratorIterator( new \RecursiveArrayIterator( $array ) );
+		$result   = [];
+		foreach ( $iterator as $value )
 		{
-			if ( is_array( $value ) && ! empty( $value ) )
+			$keys  = [];
+			$depth = range( 0, $iterator->getDepth() );
+			foreach ( $depth as $step )
 			{
-				$results = array_merge( $results, static::dot( $value, $prepend . $key . '.' ) );
+				$keys[] = $iterator->getSubIterator( $step )->key();
 			}
-			else
-			{
-				$results[ $prepend . $key ] = $value;
-			}
+			$result[ implode( '.', $keys ) ] = $value;
 		}
 
-		return $results;
+		return $result;
 	}
 
 	/**
@@ -352,10 +298,7 @@ class Arr
 				return wpe_value( $default );
 			}
 
-			foreach ( $array as $item )
-			{
-				return $item;
-			}
+			return array_key_first( $array );
 		}
 
 		foreach ( $array as $key => $value )
@@ -471,35 +414,47 @@ class Arr
 	 */
 	public static function pluck ( $array, $value, $key = null )
 	{
-		$results = [];
+		$list    = [];
+		$columns = (array) $value;
 
-		[ $value, $key ] = static::explodePluckParameters( $value, $key );
+		if ( count( $columns ) > 1 )
+		{
+			$cb = static function ( $item, $columns )
+			{
+				return static::only( $item, $columns );
+			};
+		}
+		else
+		{
+			$cb = function ( $item, $columns )
+			{
+				return self::walk( $columns, $item );
+			};
+		}
 
 		foreach ( $array as $item )
 		{
-			$itemValue = data_get( $item, $value );
 
-			// If the key is "null", we will just append the value to the array and keep
-			// looping. Otherwise we will key the array using the value of the key we
-			// received from the developer. Then we'll return the final array form.
-			if ( is_null( $key ) )
+			$item_value = $cb( $item, $columns );
+
+			if ( $key )
 			{
-				$results[] = $itemValue;
+				$index_key = self::walk( $key, $item );
+
+				if ( array_key_exists( $index_key, $list ) )
+				{
+					throw new \Exception( 'Array key must be unique for Arr::pluck with index.' );
+				}
+
+				$list[ $index_key ] = $item_value;
 			}
 			else
 			{
-				$itemKey = data_get( $item, $key );
-
-				if ( is_object( $itemKey ) && method_exists( $itemKey, '__toString' ) )
-				{
-					$itemKey = (string) $itemKey;
-				}
-
-				$results[ $itemKey ] = $itemValue;
+				$list[] = $item_value;
 			}
 		}
 
-		return $results;
+		return $list;
 	}
 
 	/**
@@ -727,5 +682,60 @@ class Arr
 		}
 
 		return is_array( $value ) ? $value : [ $value ];
+	}
+
+	/**
+	 * HTML class names helper
+	 *
+	 * @param array $array
+	 *
+	 * @return string
+	 */
+	public static function reduceAllowedStr ( $array )
+	{
+		$reduced = '';
+		array_walk( $array, function ( $val, $key ) use ( &$reduced )
+		{
+			$reduced .= $val ? " $key" : '';
+		} );
+		$cleaned = implode( ' ', array_unique( array_map( 'trim', explode( ' ', trim( $reduced ) ) ) ) );
+		return $cleaned;
+	}
+
+	/**
+	 * Dots Walk
+	 *
+	 * Traverse array with dot notation with wilds (*).
+	 *
+	 * @param array|object $array an array to traverse
+	 * @param string|array $dots  dot notation key.next.final
+	 * @param null|mixed   $default
+	 *
+	 * @return array|mixed|null
+	 */
+	public static function walk ( $array, $dots, $default = null )
+	{
+		$traverse = is_array( $dots ) ? $dots : explode( '.', $dots );
+		foreach ( $traverse as $i => $step )
+		{
+			unset( $traverse[ $i ] );
+			if ( $step === '*' && is_array( $array ) )
+			{
+				return array_map( function ( $item ) use ( $traverse, $default )
+				{
+					return static::walk( $traverse, $item, $default );
+				}, $array );
+			}
+
+			$v = is_object( $array ) ? ( $array->$step ?? null ) : ( $array[ $step ] ?? null );
+
+			if ( ! isset( $v ) && ! is_string( $array ) )
+			{
+				return $default;
+			}
+			$array = $v ?? $default;
+		}
+
+		return $array;
 	}
 }
