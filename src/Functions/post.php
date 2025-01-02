@@ -578,12 +578,12 @@ if ( ! function_exists( 'wpe_add_taxonomy' ) )
 	 * Register taxonomy
 	 *
 	 * @param string $name      Define the taxonomy name.
-	 * @param string $post_type Define the post type name.
+	 * @param string|array $post_type Define the post type name.
 	 * @param array  $args      Define arguments for the taxonomy.
 	 *
 	 * @return void
 	 */
-	function wpe_add_taxonomy ( string $name, string $post_type, array $args )
+	function wpe_add_taxonomy ( string $name, $post_type, array $args )
 	{
 		$name     = "wpe_{$name}";
 		$args     = apply_filters( "wpe/taxonomy/{$name}/args", $args );

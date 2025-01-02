@@ -2,6 +2,11 @@
 
 namespace WPEssential\Library;
 
+if ( ! \defined( 'ABSPATH' ) )
+{
+	exit; // Exit if accessed directly.
+}
+
 class Inflect
 {
 	private static $plural = [
@@ -81,14 +86,18 @@ class Inflect
 		'equipment'
 	];
 
-	public static function pluralize ( $string )
+	private static function same_sting_check ( $string )
 	{
 		// save some time in the case that singular and plural are the same
 		if ( in_array( strtolower( (string) $string ), self::$uncountable ) )
 		{
 			return $string;
 		}
+	}
 
+	public static function pluralize ( $string )
+	{
+		self::same_sting_check( $string );
 		// check for irregular singular forms
 		foreach ( self::$irregular as $pattern => $result )
 		{
@@ -114,12 +123,7 @@ class Inflect
 
 	public static function singularize ( $string )
 	{
-		// save some time in the case that singular and plural are the same
-		if ( in_array( strtolower( (string) $string ), self::$uncountable ) )
-		{
-			return $string;
-		}
-
+		self::same_sting_check( $string );
 		// check for irregular plural forms
 		foreach ( self::$irregular as $result => $pattern )
 		{

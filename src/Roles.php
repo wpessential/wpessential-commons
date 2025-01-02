@@ -2,7 +2,10 @@
 
 namespace WPEssential\Library;
 
-use WPEssential\Library\Str;
+if ( ! \defined( 'ABSPATH' ) )
+{
+	exit; // Exit if accessed directly.
+}
 
 class Roles
 {

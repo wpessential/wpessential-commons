@@ -2,6 +2,11 @@
 
 namespace WPEssential\Library\Helper;
 
+if ( ! \defined( 'ABSPATH' ) )
+{
+	exit; // Exit if accessed directly.
+}
+
 use WPEssential\Library\Sanitize;
 
 trait Resourceful
