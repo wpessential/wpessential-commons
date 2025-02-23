@@ -357,11 +357,11 @@ if ( ! function_exists( 'wpe_theme_info' ) )
 				'Parent' => (object) array_filter( [
 					'Name'              => $ucwords_name,
 					'LowerNameHyphen'   => wpe_replace_in_underscore( $lower_name ),
-					'LowerNameDash'     => wpe_replace_in_underscore( $lower_name ),
+					'LowerNameDash'     => wpe_replace_in_custom( $lower_name ),
 					'UcwordsNameHyphen' => wpe_replace_in_underscore( $ucwords_name ),
 					'UcwordsNameDash'   => wpe_replace_in_underscore( $ucwords_name ),
 					'UpperNameHyphen'   => wpe_replace_in_underscore( $strtoupper_name ),
-					'UpperNameDash'     => wpe_replace_in_underscore( $strtoupper_name ),
+					'UpperNameDash'     => wpe_replace_in_custom( $strtoupper_name ),
 					'NameSpace'         => wpe_replace_in_nospace( $ucwords_name ),
 				] )
 			] );
@@ -369,6 +369,22 @@ if ( ! function_exists( 'wpe_theme_info' ) )
 		}
 
 		return apply_filters( 'wpe/theme_info', (object) $theme_info );
+	}
+}
+
+if ( ! function_exists( 'wpe_replace_in_custom' ) )
+{
+	/**
+	 * Replace space and hyphen with underscore
+	 *
+	 * @param string $sting       The data in replace.
+	 * @param string $replacement The data for replace.
+	 *
+	 * @return string
+	 */
+	function wpe_replace_in_custom ( $sting, $replacement = '-' )
+	{
+		return apply_filters( 'wpe/get/wpe_replace_in_custom', str_replace( [ ' ', '_', '|' ], $replacement, $sting ) );
 	}
 }
 
@@ -398,7 +414,7 @@ if ( ! function_exists( 'wpe_replace_in_space' ) )
 	 */
 	function wpe_replace_in_space ( $sting )
 	{
-		return apply_filters( 'wpe/get/replace_in_space', str_replace( [ '-', '-', '|' ], ' ', $sting ) );
+		return apply_filters( 'wpe/get/replace_in_space', str_replace( [ '_', '-', '|' ], ' ', $sting ) );
 	}
 }
 
