@@ -16,7 +16,8 @@
             "src/Functions/query.php",
             "src/Functions/style.php",
             "src/Functions/element.php",
-            "src/Functions/array.php"
+            "src/Functions/array.php",
+            "src/Functions/woocommerce.php"
         ]
     },
     "authors": [
