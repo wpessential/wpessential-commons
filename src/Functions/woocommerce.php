@@ -13,7 +13,7 @@ if ( ! function_exists( 'wpe_wc_cart_count' ) )
 	 *
 	 * @return int
 	 */
-	function wpe_the_author_link ( $classes = '' )
+	function wpe_wc_cart_count ()
 	{
 		return WC()->cart->get_cart_contents_count();
 	}

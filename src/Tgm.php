@@ -13,14 +13,12 @@ final class Tgm
 
 	public static function init ()
 	{
-		if ( ! \defined( 'WPE_TGM' ) )
-		{
-			return;
-		}
+		if ( ! \defined( 'WPE_TGM' ) ) return;
 
 		self::$WPE_TGM_CONFIG_DIR = get_template_directory() . self::$WPE_TGM_CONFIG_DIR;
 
 		require_once __DIR__ . '/class-tgm-plugin-activation.php';
+
 		add_action( 'tgmpa_register', [ __CLASS__, 'plugin_list' ] );
 	}
 
@@ -44,11 +42,13 @@ final class Tgm
 		$ready_plugins = [];
 		foreach ( $plugin_list as $plugin_slug => $plugin_info )
 		{
-			if ( file_exists( self::$WPE_TGM_CONFIG_DIR . "{$plugin_slug}.zip" ) )
+			if ( true === wpe_array_get( $plugin_info, 'local' ) && file_exists( self::$WPE_TGM_CONFIG_DIR . "{$plugin_slug}.zip" ) )
 			{
-				$plugin_info[ 'slug' ]         = $plugin_slug;
-				$ready_plugins[ $plugin_slug ] = $plugin_info;
+				$plugin_info[ 'source' ] = self::$WPE_TGM_CONFIG_DIR . "{$plugin_slug}.zip";
 			}
+
+			$plugin_info[ 'slug' ] = $plugin_slug;
+			$ready_plugins[]       = $plugin_info;
 		}
 
 		tgmpa( $ready_plugins, self::config() );
@@ -57,7 +57,7 @@ final class Tgm
 	private static function config ()
 	{
 		$config = [
-			'id'           => 'wpessential',
+			'id'           => 'wpessential-54rtr5465',
 			// Unique ID for hashing notices for multiple instances of TGMPA.
 			'default_path' => '',
 			// Default absolute path to bundled plugins.

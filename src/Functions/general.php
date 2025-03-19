@@ -723,3 +723,29 @@ if ( ! function_exists( 'wpe_get_sidebar' ) )
 		return $items;
 	}
 }
+
+if ( ! function_exists( 'wpe_custom_variables' ) )
+{
+	/**
+	 * Convert the custom variables
+	 *
+	 * @param string $content Variables for output
+	 *
+	 * @return string
+	 */
+	function wpe_custom_variables ( $content )
+	{
+		$custom_variables = [
+			'%YEAR%'       => date( 'Y' ),
+			'%MONTH%'      => date( 'F' ),
+			'%DAY%'        => date( 'd' ),
+			'%DATE%'       => date_i18n( get_option( 'date_format' ) ),
+			'%SITE_NAME%'  => get_bloginfo( 'name' ),
+			'%SITE_URL%'   => home_url( '/' ),
+			'%APPRECIATE%' => '<a href="https://wpessential.org/">WPEssential</a>',
+		];
+		
+		// Replace placeholders with values
+		return str_replace( array_keys( $custom_variables ), array_values( $custom_variables ), $content );
+	}
+}
