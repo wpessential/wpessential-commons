@@ -80,7 +80,7 @@ if ( ! function_exists( 'wpe_template_load' ) ) {
 			] );
 
 			if ( ! $template ) {
-				$fallback = plugin_dir_path( __DIR__ ) . "/templates/{$slug}-{$name}.php";
+				$fallback = str_replace( '\vendor\wpessential\wpessential-commons\src/', '', plugin_dir_path( __DIR__ ) ) . "/templates/{$slug}-{$name}.php";
 				$template = file_exists( $fallback ) ? $fallback : '';
 			}
 
